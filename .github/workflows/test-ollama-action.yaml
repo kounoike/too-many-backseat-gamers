@@ -21,3 +21,13 @@ jobs:
             #   run: 'echo "Model output: [$response]"'
             #   env:
             #       response: "${{ steps.run-model.outputs.response }}"
+
+            - name: Run model
+              id: run-model
+              run: |
+                  docker pull ${IMAGE_NAME}
+                      docker run -it --rm ${IMAGE_NAME} run qwen3:0.6b "日本で一番高い山は何でしょう？" > output.txt
+                      echo "---------------------結果---------------------" && cat output.txt
+                      ( echo -n "output=" && cat output.txt >> "$GITHUB_OUTPUT"
+              env:
+                  IMAGE_NAME: ghcr.io/kounoike/too-many-backseat-gamers/ollama-qwen3-0.6b:latest
