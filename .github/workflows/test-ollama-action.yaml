@@ -23,12 +23,28 @@ jobs:
             #   env:
             #       response: "${{ steps.run-model.outputs.response }}"
 
+            - name: Run Ollama container
+              run: |
+                  docker run -d --name ollama-server \
+                    -v ollama:/root/.ollama \
+                    ${IMAGE_NAME}
+
+                  # サーバーが起動するまで待つ
+                  echo "Waiting for Ollama server to start..."
+                  sleep 5
+              env:
+                  IMAGE_NAME: ghcr.io/kounoike/too-many-backseat-gamers/ollama-qwen3-0.6b:latest
+
             - name: Run model
               id: run-model
               run: |
-                  docker pull ${IMAGE_NAME}
-                      docker run -it --rm ${IMAGE_NAME} run qwen3:0.6b "日本で一番高い山は何でしょう？" > output.txt
-                      echo "---------------------結果---------------------" && cat output.txt
-                      ( echo -n "output=" && cat output.txt >> "$GITHUB_OUTPUT"
-              env:
-                  IMAGE_NAME: ghcr.io/kounoike/too-many-backseat-gamers/ollama-qwen3-0.6b:latest
+                  docker exec ollama-server ollama run qwen3:0.6b "日本で一番高い山は何でしょう？" > output.txt
+                  echo "---------------------結果---------------------"
+                  cat output.txt
+                  echo "output<<EOF" >> "$GITHUB_OUTPUT"
+                  cat output.txt >> "$GITHUB_OUTPUT"
+                  echo "EOF" >> "$GITHUB_OUTPUT"
+
+            - name: Cleanup
+              if: always()
+              run: docker rm -f ollama-server || true
