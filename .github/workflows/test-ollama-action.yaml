@@ -1,0 +1,22 @@
+on:
+    workflow_dispatch:
+
+jobs:
+    test-ollama-action:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+
+            - name: Run model
+              id: run-model
+              uses: ai-action/ollama-action@v1
+              with:
+                  model: qwen3:8b
+                  prompt: |
+                      こんにちは、あなたの名前は何ですか？
+
+            - name: Show output
+              run: 'echo "Model output: [$response]"'
+              env:
+                  response: "${{ steps.run-model.outputs.response }}"
