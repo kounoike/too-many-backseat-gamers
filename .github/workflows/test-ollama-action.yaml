@@ -6,17 +6,18 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v3
+              uses: actions/checkout@v5
 
-            - name: Run model
-              id: run-model
-              uses: ai-action/ollama-action@v1
-              with:
-                  model: qwen3:8b
-                  prompt: |
-                      こんにちは、あなたの名前は何ですか？
+            # 一旦コメントアウト
+            # - name: Run model
+            #   id: run-model
+            #   uses: ai-action/ollama-action@v1
+            #   with:
+            #       model: qwen3:8b
+            #       prompt: |
+            #           こんにちは、あなたの名前は何ですか？
 
-            - name: Show output
-              run: 'echo "Model output: [$response]"'
-              env:
-                  response: "${{ steps.run-model.outputs.response }}"
+            # - name: Show output
+            #   run: 'echo "Model output: [$response]"'
+            #   env:
+            #       response: "${{ steps.run-model.outputs.response }}"
