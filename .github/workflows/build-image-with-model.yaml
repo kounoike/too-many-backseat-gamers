@@ -36,7 +36,11 @@ jobs:
             - name: Prepare variables
               id: vars
               run: |
-                  echo "image_name=${MODEL://:/-}" >> "$GITHUB_OUTPUT"
+                  model="${{ inputs.model }}"             # 例: qwen3:8b
+                  slug="${model//:/-}"                    # 例: qwen3-8b
+                  echo "model=${model}" >> "$GITHUB_OUTPUT"
+                  echo "model_slug=${slug}" >> "$GITHUB_OUTPUT"
+                  echo "image_name=${GITHUB_REPOSITORY}/ollama-${slug}" >> "$GITHUB_OUTPUT"
               env:
                   model: ${{ github.event.inputs.model }}
 
